@@ -13,6 +13,32 @@ class FitnessProgressController extends Controller
         return response()->json($fitnessProgresses, 200);
     }
 
+
+    public function update(Request $request, FitnessProgress $fitnessProgress)
+    {
+        if ($fitnessProgress->user_id !== $request->user()->id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+    
+        $validatedData = $request->validate([
+            'weight' => 'nullable|numeric',
+            'measurements' => 'nullable|json',
+            'performance_data' => 'nullable|json',
+        ]);
+    
+        if (isset($validatedData['measurements'])) {
+            $validatedData['measurements'] = json_decode($validatedData['measurements'], true);
+        }
+    
+        if (isset($validatedData['performance_data'])) {
+            $validatedData['performance_data'] = json_decode($validatedData['performance_data'], true);
+        }
+    
+        $fitnessProgress->update($validatedData);
+    
+        return response()->json($fitnessProgress, 200);
+    }
+    
     public function store(Request $request)
     {
         $validatedData = $request->validate([
@@ -20,38 +46,21 @@ class FitnessProgressController extends Controller
             'measurements' => 'nullable|json',
             'performance_data' => 'nullable|json',
         ]);
-
+     
+    
+        if (isset($validatedData['measurements'])) {
+            $validatedData['measurements'] = json_decode($validatedData['measurements'], true);
+        }
+    
+        if (isset($validatedData['performance_data'])) {
+            $validatedData['performance_data'] = json_decode($validatedData['performance_data'], true);
+        }
+    
         $fitnessProgress = $request->user()->fitnessProgresses()->create($validatedData);
-
+    
         return response()->json($fitnessProgress, 201);
     }
-
-    public function show(FitnessProgress $fitnessProgress, Request $request)
-    {
-        if ($fitnessProgress->user_id !== $request->user()->id) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
-
-        return response()->json($fitnessProgress, 200);
-    }
-
-    public function update(Request $request, FitnessProgress $fitnessProgress)
-    {
-        if ($fitnessProgress->user_id !== $request->user()->id) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
-
-        $validatedData = $request->validate([
-            'weight' => 'nullable|numeric',
-            'measurements' => 'nullable|json',
-            'performance_data' => 'nullable|json',
-        ]);
-
-        $fitnessProgress->update($validatedData);
-
-        return response()->json($fitnessProgress, 200);
-    }
-
+    
     public function destroy(FitnessProgress $fitnessProgress, Request $request)
     {
         if ($fitnessProgress->user_id !== $request->user()->id) {
@@ -71,6 +80,11 @@ class FitnessProgressController extends Controller
 
         $fitnessProgress->update(['status' => !$fitnessProgress->status]);
 
+        return response()->json($fitnessProgress, 200);
+    }
+
+    public function show(FitnessProgress $fitnessProgress)
+    {
         return response()->json($fitnessProgress, 200);
     }
 }

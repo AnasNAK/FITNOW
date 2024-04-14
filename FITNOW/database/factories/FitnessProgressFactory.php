@@ -1,8 +1,10 @@
 <?php
-namespace Database\Factories;
 
-use App\Models\FitnessProgress;
+namespace Database\Factories;
+// database/factories/FitnessProgressFactory.php
+
 use App\Models\User;
+use App\Models\FitnessProgress;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class FitnessProgressFactory extends Factory
@@ -16,14 +18,8 @@ class FitnessProgressFactory extends Factory
                 return User::factory()->create()->id;
             },
             'weight' => $this->faker->randomFloat(2, 50, 100),
-            'measurements' => json_encode([
-                'chest' => $this->faker->numberBetween(30, 50),
-                'waist' => $this->faker->numberBetween(25, 40),
-            ]),
-            'performance_data' => json_encode([
-                'bench_press' => $this->faker->numberBetween(50, 150),
-                'squats' => $this->faker->numberBetween(100, 200),
-            ]),
+            'measurements' => $this->faker->randomElement(['{"chest":40,"waist":32}', '{"chest":42,"waist":30}']),
+            'performance_data' => $this->faker->randomElement(['{"bench_press":100,"squats":150}', null]),
             'status' => $this->faker->boolean(),
         ];
     }

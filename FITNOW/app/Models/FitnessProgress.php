@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -8,14 +7,20 @@ use Illuminate\Database\Eloquent\Model;
 class FitnessProgress extends Model
 {
     use HasFactory;
-    protected $table ='fitness_progresses';
 
+    protected $table ='fitness_progresses';
+    
     protected $fillable = [
         'user_id',
         'weight',
         'measurements',
         'performance_data',
         'status',
+    ];
+
+    protected $casts = [
+        'measurements' => 'array',
+        'performance_data' => 'array',
     ];
 
     public function user()
